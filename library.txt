@@ -1,0 +1,395 @@
+#include <limits>
+#include <iostream>
+using namespace std;
+
+// structure to hold date
+struct Date
+{
+ int day;
+ int month;
+ int year;
+};
+
+// function to print date
+void printDate(struct Date date)
+{
+ cout << date.day << "/" << date.month << "/" << date.year << endl;
+}
+
+// function to check if book is overdue
+double overdue(struct Date checkout, struct Date returnDate)
+{
+ int d, m, y;
+ y = returnDate.year - checkout.year;
+ m = returnDate.month - checkout.month;
+ d = returnDate.day - checkout.day;
+ if (d < 0)
+{
+ m--;
+ d += 30;
+ }
+ if (m<0)
+ {
+ y--;
+ m += 12;
+ }
+ 
+ // calculate the date difference in days
+ int days = (d + (m * 30) + (y * 365));
+ // calculate overdue charges and return the value
+ if (days > 30)
+ return (days - 30) * 0.5;
+ else
+ return 0;
+}
+
+// structure to hold checkout data
+struct CheckoutData
+{
+ string name;
+ string address;
+ string phone;
+ Date checkedOut;
+ Date dateReturned;
+ double charges;
+};
+
+// structure to hold book
+struct Book
+{
+int bookNum;
+ string title;
+ string author;
+ string coAuthor;
+ string publisher;
+ Date datePublished;
+ string subject;
+ string keywords;
+ CheckoutData checkout;
+};
+
+
+// function to add book
+void addBook(struct Book books[], int* numberOfBooks)
+{
+ cout << "Enter book number: ";
+ cin >> books[*numberOfBooks].bookNum;
+ cout << "Enter book title: ";
+ cin >> books[*numberOfBooks].title;
+ cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+ cout << "Enter book author: ";
+ cin >> books[*numberOfBooks].author;
+ cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+ cout << "Enter book co-authors: ";
+ cin >> books[*numberOfBooks].coAuthor;
+ cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+ cout << "Enter book publisher: ";
+ cin >> books[*numberOfBooks].publisher;
+ cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+cout << "Enter book pubished date (dd mm yyyy): ";
+ cin >> books[*numberOfBooks].datePublished.day >> 
+books[*numberOfBooks].datePublished.month >> 
+books[*numberOfBooks].datePublished.year;
+ cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+ cout << "Enter book subject: ";
+ cin >> books[*numberOfBooks].subject;
+ cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+ cout << "Enter book keywords: ";
+ cin >> books[*numberOfBooks].keywords;
+ cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+ // increment the number of books
+ *(numberOfBooks) += 1;
+}
+
+
+// function to display a single book
+void displayBook(struct Book book)
+{
+ cout << "\nBook number: " << book.bookNum << endl;
+ cout << "Book title: " << book.title << endl;
+ cout << "Book author: " << book.author << endl;
+ cout << "Book co-authors: " << book.coAuthor << endl;
+ cout << "Book publisher: " << book.publisher << endl;
+ cout << "Book date published: ";
+ printDate(book.datePublished);
+ cout << "Book subject: " << book.subject << endl;
+ cout << "Book keywords: " << book.keywords << endl;
+}
+
+
+// function to display all books
+void displayBooks(struct Book books[], int numberOfBooks)
+{
+ for (int i = 0; i < numberOfBooks; i++)
+ {
+ cout << "\nBook #" << (i + 1) << endl;
+ displayBook(books[i]);
+ }
+}
+
+
+// function to search book by number
+int searchByNumber(struct Book books[], int numberOfBooks, int bookNum)
+{
+ for (int i = 0; i < numberOfBooks; i++)
+ {
+ if (books[i].bookNum == bookNum)
+ {
+ cout << "Book found." << endl;
+ cout << "Book details:- " << endl;
+ displayBook(books[i]);
+ return i;
+ }
+ }
+ return -1;
+}
+
+
+// function to search book by author
+int searchByAuthor(struct Book books[], int numberOfBooks, string author)
+{
+ for (int i = 0; i < numberOfBooks; i++)
+ {
+ if (books[i].author.compare(author) == 0)
+{
+ cout << "Book found." << endl;
+ cout << "Book details:- " << endl;
+ displayBook(books[i]);
+ return i;
+ }
+ }
+ return -1;
+}
+
+
+// function to search book by title
+int searchByTitle(struct Book books[], int numberOfBooks, string title)
+{
+ for (int i = 0; i < numberOfBooks; i++)
+ {
+ if (books[i].title.compare(title) == 0)
+ {
+ cout << "Book found." << endl;
+ cout << "Book details:- " << endl;
+ displayBook(books[i]);
+ return i;
+ }
+ }
+ return -1;
+}
+
+
+// function to search book by subject
+int searchBySubject(struct Book books[], int numberOfBooks, string subject)
+{
+ for (int i = 0; i < numberOfBooks; i++)
+ {
+ if (books[i].subject.compare(subject) == 0)
+ {
+cout << "Book found." << endl;
+ cout << "Book details:- " << endl;
+ displayBook(books[i]);
+ return i;
+ }
+ }
+ return -1;
+}
+
+
+// function to search book by keywords
+int searchByKeyword(struct Book books[], int numberOfBooks, string keyword)
+{
+ for (int i = 0; i < numberOfBooks; i++)
+ {
+ if (books[i].keywords.compare(keyword) == 0)
+ {
+ cout << "Book found." << endl;
+ cout << "Book details:- " << endl;
+ displayBook(books[i]);
+ return i;
+ }
+ }
+ return -1;
+}
+
+
+// function to checkout book
+Book checkOut(struct Book book)
+{
+ cout << "\nEnter checkout details:-" << endl;
+ cout << "Enter name : ";
+ cin >> book.checkout.name;
+ cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+cout << "Enter address : ";
+ cin >> book.checkout.address;
+ cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+ cout << "Enter phone number : ";
+ cin >> book.checkout.phone;
+ cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+ cout << "Enter book checked out date (dd mm yyyy): ";
+ cin >> book.checkout.checkedOut.day >> book.checkout.checkedOut.month >> 
+book.checkout.checkedOut.year;
+ cout << "Enter book return date (dd mm yyyy): ";
+ cin >> book.checkout.dateReturned.day >> book.checkout.dateReturned.month >> 
+book.checkout.dateReturned.year;
+ book.checkout.charges = overdue(book.checkout.checkedOut, 
+book.checkout.dateReturned);
+ if (book.checkout.charges > 0)
+ cout << "Late charge : $" << book.checkout.charges << endl;
+ return book;
+}
+
+
+// function to print details of checkout
+void printCheckoutDetails(struct Book book)
+{
+ cout << "\nCheckout details:" << endl;
+ cout << "Name : " << book.checkout.name << endl;
+ cout << "Address : " << book.checkout.address << endl;
+ cout << "Phone : " << book.checkout.phone << endl;
+ cout << "Date checked out : ";
+ printDate(book.checkout.checkedOut);
+ cout << "Return date : ";
+ printDate(book.checkout.dateReturned);
+ cout << "Charges : " << book.checkout.charges << endl;
+}
+
+
+int main()
+{
+ // array of book structure
+ struct Book books[500];
+ int numberOfBooks = 0;
+ int choice, choice2;
+ char ch;
+ // loop and display menu
+ while (true)
+ {
+ cout << "\n1. Add new books." << endl;
+ cout << "2. Search books." << endl;
+ cout << "3. Display books." << endl;
+ cout << "4. Quit" << endl;
+ cout << "Enter choice: ";
+ cin >> choice;
+ if (choice == 1)
+ addBook(books, &numberOfBooks);
+ else if (choice == 2)
+ {
+ cout << "\n1. Search by book number. " << endl;
+ cout << "2. Search by author. " << endl;
+ cout << "3. Search by title. " << endl;
+ cout << "4. Search by subject. " << endl;
+ cout << "5. Search by keywords. " << endl;
+ cout << "6. Return to main menu. " << endl;
+ cout << "Enter choice: ";
+ cin >> choice2;
+ if (choice2 == 1)
+ {
+int num;
+ cout << "Enter book number to search: ";
+ cin >> num;
+ int result = searchByNumber(books, numberOfBooks, num);
+ cout << result;
+ if (result == -1)
+ cout << "Book not found." << endl;
+ else
+ {
+ cout << "Do you want to checkout? (y/n): ";
+ cin >> ch;
+ if (ch == 'y' || ch == 'Y')
+ {
+ books[result] = checkOut(books[result]);
+ printCheckoutDetails(books[result]);
+ }
+ }
+ }
+ else if (choice2 == 2)
+ {
+ string author;
+ cout << "Enter book author to search: ";
+ cin >> author;
+ cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+ int result = searchByAuthor(books, numberOfBooks, author);
+ if (result == -1)
+ cout << "Book not found." << endl;
+ else
+ {
+ cout << "Do you want to checkout? (y/n): ";
+ cin >> ch;
+ if (ch == 'y' || ch == 'Y')
+{
+ books[result] = checkOut(books[result]);
+ printCheckoutDetails(books[result]);
+ }
+ }
+ }
+ else if (choice2 == 3)
+ {
+ string title;
+ cout << "Enter book title to search: ";
+ cin >> title;
+ cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+ int result = searchByTitle(books, numberOfBooks, title);
+ if (result == -1)
+ cout << "Book not found." << endl;
+ else
+ {
+ cout << "Do you want to checkout? (y/n): ";
+ cin >> ch;
+ if (ch == 'y' || ch == 'Y')
+ {
+ books[result] = checkOut(books[result]);
+ printCheckoutDetails(books[result]);
+ }
+ }
+ }
+ else if (choice2 == 4)
+ {
+ string subject;
+ cout << "Enter book subject to search: ";
+ cin >> subject;
+ cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+int result = searchBySubject(books, numberOfBooks, subject);
+ if (result == -1)
+ cout << "Book not found." << endl;
+ else
+ {
+ cout << "Do you want to checkout? (y/n): ";
+ cin >> ch;
+ if (ch == 'y' || ch == 'Y')
+ {
+ books[result] = checkOut(books[result]);
+ printCheckoutDetails(books[result]);
+ }
+ }
+ }
+ else if (choice2 == 5)
+ {
+ string keywords;
+ cout << "Enter book keywords to search: ";
+ cin >> keywords;
+ cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+ int result = searchByKeyword(books, numberOfBooks, keywords);
+ if (result == -1)
+ cout << "Book not found." << endl;
+ else
+ {
+ cout << "Do you want to checkout? (y/n): ";
+ cin >> ch;
+ if (ch == 'y' || ch == 'Y')
+ {
+ books[result] = checkOut(books[result]);
+ printCheckoutDetails(books[result]);
+ }
+ }
+ }
+ }
+ else if (choice == 3)
+ displayBooks(books, numberOfBooks);
+ else if(choice == 4)
+ break;
+ else
+ cout << "Invalid choice. Please re-enter." << endl;
+ }
+ cout << "Thank you." << endl;
+}
